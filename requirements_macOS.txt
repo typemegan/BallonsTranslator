@@ -31,4 +31,5 @@ six
 keyboard
 ordered-set
 pyinstaller
-opencc
+opencc-python-reimplemented==0.1.4
+gallery-dl

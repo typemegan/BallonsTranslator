@@ -1,3 +1,89 @@
+> 说明：该fork记录本人在macOS下的部署运行细节
+> - 系统环境：
+>   - OS: macOS Ventura 版本13.4.1(c)
+>   - 硬件：Apple M2 Max，12CPU，64GB内存
+> - 运行效果：
+>   - 比较耗内存和CPU，期间CPU温度最高能达到80+摄氏度
+>     - 建议这个过程中不要再运行其他高消耗的应用，否则电脑很容易卡死
+>   - 180页左右的漫画耗时1小时左右
+> - 翻译效果：
+>   - 差强人意，不过聊胜于无
+
+# MacOS环境下部署运行细节
+
+## 运行方式实践
+- ❌App打包签名失败
+- ✅Python虚拟环境方式部署 + 运行
+  - 原文档中对环境的部署这块交代的不够清楚，需要自己查漏补缺
+    - Python虚拟环境的搭建 （见👇部署细节）
+    - 依赖库的缺失&版本 （已更新requirements_macOS.txt）
+
+## 环境部署
+
+```shell
+# 克隆仓库
+git clone https://github.com/typemegan/BallonsTranslator.git 
+cd BallonsTranslator
+
+# 安装 pyenv
+brew install pyenv mecab  
+
+# 安装虚拟环境管理工具
+pip3 install virtualenv
+
+# 安装指定python版本 （有些库要3.9版本才支持）
+env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.13
+
+# 在当前目录指定python版本
+pyenv local 3.9.13   # 会产生文件.python-version，记录版本信息
+
+# 在当前目录创建虚拟环境
+pyenv exec python -m venv env  # 产生env目录，里面有虚拟环境的所有信息
+
+# 进入虚拟环境
+source env/bin/activate
+
+# 安装依赖, macOS安装requirements_macOS.txt
+pip install -r requirements_macOS.txt
+
+# 如果需要退出虚拟环境：
+deactivate
+```
+> 💡期间如有失败，根据失败信息谷歌自行解决
+
+## 下载AI翻译模型并与原data目录进行合并
+- 从 [MEGA](https://mega.nz/folder/gmhmACoD#dkVlZ2nphOkU5-2ACb5dKw) or [Google Drive](https://drive.google.com/drive/folders/1uElIYRLNakJj-YS0Kd3r3HE-wzeEvrWd?usp=sharing) 下载**data**文件夹并拖拽到 ```BallonsTranslator/ballontranslator```目录下
+- 弹出确认选择合并"data目录"
+> ⚠️注意是合并而不是替换
+
+## 运行
+```shell
+# 进入👆的目录
+cd BallonsTranslator
+
+# 激活虚拟环境
+source env/bin/activate
+
+# 运行程序
+python ballontranslator
+```
+- 之后会起来一个窗口界面，所有的操作就可以基于这个界面进行了
+  - 打开漫画图片所在目录
+  - 点击"Run"
+- 注意：涉及到谷歌翻译，国内环境需要搭梯子
+  - 建议界面设置里把超时延长一些
+- 注意：不同于APP运行方式，这种运行方式要中断的话需要"强制退出" （不了解的谷歌"Mac强制退出进程"）
+  - 期间报错的话也不会自动退出（比如网络超时），此时也需要"强制退出"
+- 注意：运行不会断点继续
+  - 中断之后再运行的话程序会重新将所有的图片跑一遍，为了避免这个重复过程：
+    - 可以将跑出的结果的图片挪出操作目录 (可以写个脚本操作：比照result目录挪走已翻译的图片)
+    - 另外无法翻译的图片（比如误识别图片字符超过5000异常的）也需要将图片挪出操作目录，否则无法进行下去
+
+
+
+
+---
+
 # BallonTranslator
 简体中文 | [English](README_EN.md) | [Русский](README_RU.md) | [日本語](README_JA.md) | [Indonesia](README_ID.md)
 
@@ -32,7 +118,7 @@
 
 Windows用户可从[MEGA](https://mega.nz/folder/gmhmACoD#dkVlZ2nphOkU5-2ACb5dKw) or [Google Drive](https://drive.google.com/drive/folders/1uElIYRLNakJj-YS0Kd3r3HE-wzeEvrWd?usp=sharing)(注意: 需要从github release 下载最新版Ballonstranslator-1.3.xx, 解压并覆盖到**Ballontranslator-1.3.0-core**或者较旧的安装目录以更新程序.)
 
-### 运行源码
+### 运行源码 (jiyu)
 
 ```bash
 # 克隆仓库
