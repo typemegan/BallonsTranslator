@@ -46,6 +46,9 @@ source env/bin/activate
 # 安装依赖, macOS安装requirements_macOS.txt
 pip install -r requirements_macOS.txt
 
+# 安装torch-cuda启用GPU加速
+pip install torch torchvision torchaudio
+
 # 如果需要退出虚拟环境：
 deactivate
 ```
